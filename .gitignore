@@ -27,3 +27,5 @@ stats-cache.json
 !statusline-command.sh
 
 skills/synced/**
+**/__pycache__/
+**/.pytest_cache/
