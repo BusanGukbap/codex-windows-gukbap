@@ -6,19 +6,12 @@
       "Bash(gcc *)",
       "Bash(g++ *)",
       "Bash(git status*)",
-      "Bash(git -C * status*)",
       "Bash(git log *)",
-      "Bash(git -C * log *)",
       "Bash(git diff *)",
-      "Bash(git -C * diff *)",
       "Bash(git add *)",
-      "Bash(git -C * add *)",
       "Bash(git commit *)",
-      "Bash(git -C * commit *)",
       "Bash(git branch *)",
-      "Bash(git -C * branch *)",
       "Bash(git stash*)",
-      "Bash(git -C * stash*)",
       "Bash(gh issue list *)",
       "Bash(gh pr view *)",
       "Bash(gh label list *)",
@@ -44,13 +37,9 @@
     ],
     "ask": [
       "Bash(git push *)",
-      "Bash(git -C * push *)",
       "Bash(git push --force *)",
-      "Bash(git -C * push --force *)",
       "Bash(git reset --hard *)",
-      "Bash(git -C * reset --hard *)",
       "Bash(git rebase *)",
-      "Bash(git -C * rebase *)",
       "Bash(rm -rf *)",
       "Bash(gh pr create *)",
       "Bash(gh pr edit *)",
@@ -64,33 +53,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.claude/hooks/memory-persistence/session-start.sh"
-          },
-          {
-            "type": "command",
             "command": "~/.claude/hooks/superpowers/session-start.sh"
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/memory-persistence/session-end.sh"
-          }
-        ]
-      }
-    ],
-    "PreCompact": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/memory-persistence/pre-compact.sh"
           }
         ]
       }
@@ -129,5 +92,5 @@
     "clangd-lsp@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true
   },
-  "effortLevel": "high"
+  "tui": "fullscreen"
 }

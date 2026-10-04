@@ -1,29 +1,6 @@
 # Hooks System
 
-## Hook Types
-
-- **SessionStart**: When a session begins
-- **Stop**: When session ends
-- **PreCompact**: Before context compaction
-- **UserPromptSubmit**: When user submits a prompt
-- **PostToolUse**: After a tool call succeeds
-
-## Current Hooks (in ~/.claude/settings.json)
-
-### SessionStart
-- **memory-persistence**: Loads persistent memory from previous sessions
-
-### Stop
-- **memory-persistence**: Saves session memory for future use
-
-### PreCompact
-- **memory-persistence**: Persists memory before context window compaction
-
-### UserPromptSubmit
-- **english-correction**: Corrects English in user prompts (timeout: 300ms)
-
-### PostToolUse
-- **clang-format**: Auto-formats C/C++ files after Write/Edit if `.clang-format` exists in the project tree
+Hook configuration lives in `~/.claude/settings.json`. Read it before describing which hooks are active; don't assume from memory.
 
 ## Auto-Accept Permissions
 
@@ -32,18 +9,3 @@ Use with caution:
 - Disable for exploratory work
 - Never use dangerously-skip-permissions flag
 - Configure `permissions.allow` in `~/.claude/settings.json` instead
-
-## Task Tracking Best Practices
-
-Use TaskCreate/TaskUpdate/TaskList/TaskGet tools to:
-- Track progress on multi-step tasks
-- Verify understanding of instructions
-- Enable real-time steering
-- Show granular implementation steps
-
-Task list reveals:
-- Out of order steps
-- Missing items
-- Extra unnecessary items
-- Wrong granularity
-- Misinterpreted requirements

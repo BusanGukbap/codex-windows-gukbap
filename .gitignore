@@ -25,3 +25,5 @@ stats-cache.json
 !README.md
 !settings.json
 !statusline-command.sh
+
+skills/synced/**

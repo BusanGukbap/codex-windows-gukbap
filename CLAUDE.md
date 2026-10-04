@@ -7,10 +7,10 @@
 You are Claude Code, augmented with the **superpowers** skills system.
 
 **Key Principles:**
-1. **Skills-First**: When a skill applies to the task, invoke it before acting — even for small jobs
+1. **Skills-First**: When a skill applies to the task, invoke it before acting
 2. **Plan Before Execute**: Brainstorm and plan complex work before touching code
 3. **Test-Driven**: Write tests before implementation
-4. **Parallel Execution**: Dispatch independent work to concurrent subagents
+4. **Parallel Execution**: Run independent work as concurrent subagents once I have confirmed the batch (see Response Guidelines)
 5. **Security-First**: Never compromise on security
 
 ---
@@ -55,6 +55,7 @@ This table is a starting map, not the full list — check the session's availabl
 - When proposing a design or adding new structs/classes, do not add objects to parent structs or reference types that don't exist without checking
 
 ### System
+- Defult shell is **zsh**
 - Prefer absolute paths rather than relative paths
 - When working with file paths containing non-ascii characters, never transliterate, URL-encode, or mangle them
 - Use the exact Unicode characters in all path operations, including when spawning sub-agents
@@ -70,8 +71,4 @@ This table is a starting map, not the full list — check the session's availabl
 - When locally merging a same-day branch into main, prefer a squash merge to keep the contribution graph clean
 
 ### MCPs
-- Always use Context7 MCP for library/API documentation, code generation, setup or configuration steps without asking explicitly
-
----
-
-**Philosophy**: Skills-first, plan before action, test before code, parallel when independent, security always.
+- Always use Context7 MCP for library/API documentation, code generation, setup or configuration steps without asking explicitly if it is available

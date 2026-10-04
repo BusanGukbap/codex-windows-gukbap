@@ -95,14 +95,14 @@ Rules:
    - original: the phrase from the original prompt
    - suggestion: the improved phrase
    - category: one of grammar, vocabulary, style, spelling, word_order
-   - explanation: brief explanation in $TARGET_LANGUAGE (1 sentence, max 20 words). Frame as \"이렇게 하면 더 자연스러워요\" not \"이건 틀렸어요\".
-5. tip: One memorable tip in $TARGET_LANGUAGE (1 sentence, max 30 words) about the most useful pattern. If no corrections, share a useful English expression tip.
+   - explanation: brief explanation in $TARGET_LANGUAGE (one short sentence). Frame as \"이렇게 하면 더 자연스러워요\" not \"이건 틀렸어요\".
+5. tip: One memorable tip in $TARGET_LANGUAGE (one short sentence) about the most useful pattern. If no corrections, share a useful English expression tip.
 6. is_korean_only: true if the entire prompt is written in Korean (no English words except technical terms like API, git, etc.).
 7. english_translation: If is_korean_only is true, provide a natural, professional English translation of the Korean prompt. This helps the user learn how to express the same idea in English. If is_korean_only is false, return an empty string.
 8. notable_expressions: Provide up to 3 notable expressions at the advanced level of English, regardless of whether there are corrections.
    - For English input: highlight good phrases/patterns the user chose well
    - For Korean input: highlight interesting translation choices made
-   - Each item: expression (the phrase), explanation (brief Korean explanation, max 20 words, why it's good or interesting)
+   - Each item: expression (the phrase), explanation (one short Korean sentence on why it's good or interesting)
 
 Focus on patterns Korean speakers commonly struggle with: articles (a/the), prepositions, singular/plural, tense consistency, word order.
 
