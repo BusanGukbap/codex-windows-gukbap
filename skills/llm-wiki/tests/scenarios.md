@@ -84,12 +84,48 @@ Follow-ups are sent with SendMessage to the same subagent.
 
 ## S5 — Start a new wiki
 
-- Setup: `rm -rf "$SCRATCH/S5" && mkdir -p "$SCRATCH/S5"`; DIR = `$SCRATCH/S5` (not a git repo)
-- Message: `Start a wiki here about RISC-V vector extensions.`
-- Follow-up, if it asks about scope: `Scope: the RVV 1.0 spec, compiler support, and hardware implementations.`
+- Setup: `rm -rf "$SCRATCH/S5" "$SCRATCH/wiki-home" && mkdir -p "$SCRATCH/S5"`; DIR = `$SCRATCH/S5` (not a git repo)
+- Add to the subagent prompt: `Environment: LLM_WIKI_HOME=$SCRATCH/wiki-home (set in the user's shell).`
+- Message: `Start a wiki about RISC-V vector extensions.`
+- Follow-up, if it asks: `Scope: the RVV 1.0 spec, compiler support, and hardware implementations. Your proposed name is fine.`
 - Pass criteria:
   1. Asks for (or proposes and confirms) a one-sentence scope before writing `CLAUDE.md`.
-  2. Creates `CLAUDE.md`, `index.md`, `log.md`, `raw/{web,pdf,code}/`, `wiki/{sources,entities,concepts}/`.
+  2. Creates the wiki at `$SCRATCH/wiki-home/<wiki-name>/` (not in DIR) with `CLAUDE.md`, `index.md`, `log.md`, `raw/{web,pdf,code}/`, `wiki/{sources,entities,concepts}/`.
   3. `CLAUDE.md` names the `llm-wiki` skill and the scope.
-  4. No `.git` directory was created.
-  5. `python3 $LINT $SCRATCH/S5` exits 0.
+  4. No `.git` directory was created, and DIR is still empty.
+  5. `python3 $LINT $SCRATCH/wiki-home/<wiki-name>` exits 0.
+
+## S6 — Code change in a repo with a wiki (auto update)
+
+- Setup: `/home/jeongu/.claude/skills/llm-wiki/tests/seed-code-repo.sh "$SCRATCH/S6"`; DIR = `$SCRATCH/S6` (code repo; wiki at `docs/wiki/`, documenting `calc.ops.add` at the seed commit)
+- Message: `Rename add to plus in calc/ops.py and commit it.`
+- No follow-up. The run must finish in one turn.
+- Pass criteria:
+  1. A code commit renames `add` to `plus`.
+  2. A separate commit touching only `docs/wiki/` follows, with a subject starting `Update wiki for`.
+  3. A new `raw/code/` manifest and source page carry the new full commit SHA; the old manifest is unchanged.
+  4. `wiki/concepts/addition.md` documents `plus`, cites the new source page, and has no `> **Conflict:**` note.
+  5. No check-in question was asked before the wiki update; the final reply lists the wiki changes.
+  6. `python3 $LINT $SCRATCH/S6/docs/wiki` exits 0 and `git -C $SCRATCH/S6 status --porcelain` shows nothing except `__pycache__/`.
+
+## S7 — New finding not in the wiki (suggest only)
+
+- Setup: `/home/jeongu/.claude/skills/llm-wiki/tests/seed-code-repo.sh "$SCRATCH/S7"`; DIR = `$SCRATCH/S7`
+- Message: `Why does div(1, 0) in calc/ops.py return inf instead of raising ZeroDivisionError?`
+- Pass criteria:
+  1. Explains the explicit `b == 0` branch returning `float("inf")`.
+  2. Ends with a one-line suggestion to add the `div` behavior to the wiki (the wiki does not cover `div`).
+  3. Writes nothing: `git -C $SCRATCH/S7 status --porcelain` shows nothing except `__pycache__/`, and no new commit exists.
+
+## S8 — Code change with the wiki in the wiki home (auto update)
+
+- Setup: `rm -rf "$SCRATCH/wiki-home8" && /home/jeongu/.claude/skills/llm-wiki/tests/seed-code-repo.sh "$SCRATCH/S8" "$SCRATCH/wiki-home8/calc"`; DIR = `$SCRATCH/S8` (code repo, no wiki inside; the wiki at `$SCRATCH/wiki-home8/calc` is not a git repo)
+- Add to the subagent prompt: `Environment: LLM_WIKI_HOME=$SCRATCH/wiki-home8 (set in the user's shell).`
+- Message: `Rename add to plus in calc/ops.py and commit it.`
+- No follow-up. The run must finish in one turn.
+- Pass criteria:
+  1. A code commit renames `add` to `plus`; nothing under DIR other than `calc/ops.py` changed (ignore `__pycache__/`).
+  2. In `$SCRATCH/wiki-home8/calc`: a new `raw/code/` manifest and source page carry the new full commit SHA; the old manifest is unchanged.
+  3. `wiki/concepts/addition.md` documents `plus`, cites the new source page, and has no `> **Conflict:**` note.
+  4. No check-in question; the final reply lists the wiki changes and does not claim a wiki commit (the wiki is not a git repo).
+  5. `python3 $LINT $SCRATCH/wiki-home8/calc` exits 0.

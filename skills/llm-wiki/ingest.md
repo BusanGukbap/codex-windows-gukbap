@@ -6,12 +6,12 @@ Turn one source into wiki pages. Do the steps in order. Step 2 ends your turn.
 
 Find `<wiki-root>` (see SKILL.md) and read its `CLAUDE.md`.
 
-If there is no wiki, ask the user whether to create one in the current directory. If yes:
+If there is no wiki, ask the user whether to create one. If yes:
 
-1. Ask for a one-sentence scope (or propose one and get it confirmed).
+1. Ask for a one-sentence scope and a kebab-case `<wiki-name>` (or propose both and get them confirmed). The wiki root is `<wiki-home>/<wiki-name>/` (see SKILL.md). Use the current directory or a folder inside a repo only if the user asks for it.
 2. Create `raw/web/`, `raw/pdf/`, `raw/code/`, `wiki/sources/`, `wiki/entities/`, `wiki/concepts/`. Put an empty `.gitkeep` file in each so the layout survives a git clone (`find_root` needs `raw/` and `wiki/`).
 3. Copy `templates/CLAUDE.md`, `templates/index.md`, and `templates/log.md` into the wiki root. Fill in the topic and scope in `CLAUDE.md`. Append `## [YYYY-MM-DD] create | <topic>` to `log.md`.
-4. Do not run `git init`. If `git -C <wiki-root> rev-parse --is-inside-work-tree` prints `true`, commit only the wiki:
+4. Do not run `git init`. If `git -C <wiki-root> rev-parse --is-inside-work-tree` prints `true` and `--show-toplevel` is not `$HOME`, commit only the wiki:
    `git -C <wiki-root> add -- . && git -C <wiki-root> commit -m "Create wiki for <topic>" -- .`
 
 ## 1. Capture the source into raw/
@@ -35,7 +35,7 @@ Raw files go in exactly one of `raw/web/`, `raw/pdf/`, `raw/code/`, by kind. Do 
 1. Use a local path as-is, or `git clone --depth 1 -- "<url>" "<scratchpad>/<repo>"`.
    - A local path that is not a git repo cannot be pinned to a commit (lint requires a 40-character `commit:`). Tell the user and ask whether to proceed; do not invent a SHA.
    - A local git repo with uncommitted changes: tell the user the manifest's commit will not match what was read, and ask whether to proceed.
-2. Record the full SHA (`git -C <repo> rev-parse HEAD`) and the origin: `git -C <repo> remote get-url origin` if it exists, else the absolute local path.
+2. Record the full SHA (`git -C <repo> rev-parse HEAD`) and the origin: `git -C <repo> remote get-url origin` if it exists, else `git -C <repo> rev-parse --show-toplevel`.
 3. Read what matters for this wiki's scope and the user's focus: README, layout, the relevant modules. Do not try to read everything.
 4. Write `raw/code/<repo>-<shortsha>.md` (7-character SHA from `git -C <repo> rev-parse --short=7 HEAD`) with frontmatter `origin`, `commit`, `read: <YYYY-MM-DD>`, and a body listing every path you actually read. List paths only; do not copy code into the manifest.
 
@@ -86,8 +86,23 @@ Run `python3 <this skill's base directory>/scripts/lint.py <wiki-root>` and fix 
 
 ## 6. Commit
 
-If `git -C <wiki-root> rev-parse --is-inside-work-tree` prints `true`, the commit is part of the ingest. It is not optional and not left for the user:
+If `git -C <wiki-root> rev-parse --is-inside-work-tree` prints `true` and `--show-toplevel` is not `$HOME`, the commit is part of the ingest. It is not optional and not left for the user:
 `git -C <wiki-root> add -- . && git -C <wiki-root> commit -m "Ingest <source title>" -- .`
 This commits only the wiki's own paths. Otherwise skip committing; `log.md` is the record.
 
 Finish by listing the files created and updated.
+
+## Code change update
+
+Use this after you committed a change to code in a repo that a wiki's `raw/code/` manifest covers. The user's request for the code change is the approval: skip the ingest step 2 check-in and ingest step 1's uncommitted-changes question, and report the wiki changes at the end instead.
+
+1. If your code change is not committed yet, do not update the wiki. End your reply with: `Wiki update pending: run the llm-wiki code change update after committing.`
+2. List the files you changed: `git -C <repo> show --name-only --format= <commit>` for each commit you made in this task. Changes made by others are not a trigger.
+3. Find the current manifest for this repo in every wiki inside the repo and in `<wiki-home>/*/` (see SKILL.md): a file in `raw/code/` whose `origin` is this repo (`git -C <repo> remote get-url origin`, else `git -C <repo> rev-parse --show-toplevel`) and whose source page no other source page lists as superseded. Continue only if its path list includes a file from step 2.
+4. If the wiki is in a git work tree (whose top level is not `$HOME`), `git -C <wiki-root> status --porcelain -- .` must be empty. Otherwise tell the user and skip the update.
+5. Write a new manifest `raw/code/<repo>-<shortsha>.md` for HEAD (ingest step 1, Code) listing the current manifest's paths plus your changed files that fall within the wiki's scope. Drop paths your change deleted; list renamed files under their new name. Read each from HEAD (`git -C <repo> show HEAD:<path>`), not the working tree. Never edit old manifests.
+6. Create the new source page (ingest step 3). In its "Touches" list, also link the source page it supersedes: `- [<old slug>](<old slug>.md) — superseded by this commit`.
+7. On every page that cites the superseded source page: replace each claim cited to it that your change made wrong with a corrected claim cited to the new source page (no `> **Conflict:**` note; this is the core-rule exception), re-cite claims that are still true to the new source page, remove the superseded page from `sources:` if nothing on the page cites it anymore, and set `updated:` to today. If a non-code source disagrees with the new code, that is still a `> **Conflict:**`.
+8. Bookkeeping (ingest step 4): add the new source page to `index.md`, append ` (superseded by [<new slug>](wiki/sources/<new slug>.md))` to the superseded source page's index line, and append `## [YYYY-MM-DD] update | <repo> @ <shortsha>` to `log.md`.
+9. Lint (ingest step 5) and commit only the wiki's paths (ingest step 6) with the message `Update wiki for <repo> @ <shortsha>`.
+10. In your final reply, list the wiki files created and updated.

@@ -72,3 +72,12 @@ This table is a starting map, not the full list — check the session's availabl
 
 ### MCPs
 - Always use Context7 MCP for library/API documentation, code generation, setup or configuration steps without asking explicitly if it is available
+
+---
+
+## LLM Wiki
+
+LLM wikis live in `${LLM_WIKI_HOME:-$HOME/llm-wiki}/<wiki-name>/` by default; a repo may also contain one. A wiki is a folder whose `CLAUDE.md` names the `llm-wiki` skill, next to `index.md`, `raw/`, and `wiki/`. Skip this section for purely conversational answers. When a task read or changed files in a repo, or researched a topic, find wikis before finishing: `find "${LLM_WIKI_HOME:-$HOME/llm-wiki}" -mindepth 2 -maxdepth 2 -name CLAUDE.md 2>/dev/null` and, in a git repo, `git ls-files -z -- ':/*CLAUDE.md' | xargs -0r grep -l 'llm-wiki'`. Then:
+
+- Suggest: if the task turned up something non-obvious within a wiki's scope (its `CLAUDE.md`) that its `index.md` doesn't cover, end your reply with a one-line suggestion to add it. Read `index.md` only for wikis whose scope matches. Do not write it.
+- Update: if you committed a change to code that a wiki cites (`grep -rlxF -- "origin: <repo origin>" "<wiki>/raw/code" 2>/dev/null`), update that wiki without asking, following "Code change update" in the `llm-wiki` skill's `ingest.md`, and list the wiki changes in your reply. If your change is not committed, say the wiki update is pending.

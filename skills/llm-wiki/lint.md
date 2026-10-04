@@ -18,7 +18,7 @@ Run `python3 <this skill's base directory>/scripts/lint.py <wiki-root>`. Exit 0 
 ## 2. Judgment checks
 
 - **Unresolved conflicts:** list every `> **Conflict:**` note with a suggested resolution or a source that would settle it.
-- **Stale code:** for each `raw/code/*.md`, compare its `commit:` with `git ls-remote -- "<origin>" HEAD`. List the differing repos and the pages that cite them.
+- **Stale code:** for each `raw/code/*.md`, compare its `commit:` with `git ls-remote -- "<origin>" HEAD`, only for the current manifest per origin (the one whose source page no other source page lists as superseded); superseded manifests are history, not stale. List the differing repos and the pages that cite them.
 - **Missing pages:** terms mentioned on 3 or more pages that have no page of their own.
 - **Thin pages:** entity or concept pages whose `sources:` has a single entry.
 
@@ -26,5 +26,5 @@ Run `python3 <this skill's base directory>/scripts/lint.py <wiki-root>`. Exit 0 
 
 Show one report grouped by section 1 code and section 2 check. Ask which fixes to apply; the mechanical fixes may be approved as one batch. Apply only approved fixes, rerun `lint.py`, and append `## [YYYY-MM-DD] lint | <summary of fixes>` to `log.md`.
 
-If `git -C <wiki-root> rev-parse --is-inside-work-tree` prints `true`:
+If `git -C <wiki-root> rev-parse --is-inside-work-tree` prints `true` and `git -C <wiki-root> rev-parse --show-toplevel` is not `$HOME`:
 `git -C <wiki-root> add -- . && git -C <wiki-root> commit -m "Lint wiki" -- .`
