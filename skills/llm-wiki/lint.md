@@ -4,7 +4,7 @@ Report problems, then fix only what the user approves.
 
 ## 1. Mechanical checks
 
-Run `python3 <this skill's base directory>/scripts/lint.py <wiki-root>`. Exit 0 = clean, 1 = findings, 2 = no wiki found, 3 = lint itself failed (report the stderr message; it is not a finding).
+Run `python "<skill-directory>/scripts/lint.py" "<wiki-root>"`. Exit 0 = clean, 1 = findings, 2 = no wiki found, 3 = lint itself failed (report the stderr message; it is not a finding).
 
 | Code | Meaning | Usual fix |
 |---|---|---|
@@ -26,5 +26,4 @@ Run `python3 <this skill's base directory>/scripts/lint.py <wiki-root>`. Exit 0 
 
 Show one report grouped by section 1 code and section 2 check. Ask which fixes to apply; the mechanical fixes may be approved as one batch. Apply only approved fixes, rerun `lint.py`, and append `## [YYYY-MM-DD] lint | <summary of fixes>` to `log.md`.
 
-If `git -C <wiki-root> rev-parse --is-inside-work-tree` prints `true` and `git -C <wiki-root> rev-parse --show-toplevel` is not `$HOME`:
-`git -C <wiki-root> add -- . && git -C <wiki-root> commit -m "Lint wiki" -- .`
+Leave the corrected wiki local and report its diff and lint result. Do not stage, commit, push, or open a PR without separate explicit approval for that action.

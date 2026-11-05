@@ -5,6 +5,10 @@ description: Use when encountering any bug, test failure, or unexpected behavior
 
 # Systematic Debugging
 
+## Codex execution
+
+Use the available Codex file and command tools; Windows commands use PowerShell or Python. Preserve the user's small-task fast path and reuse valid verification evidence. Do not create plan/log artifacts for a small fix, automatically run a whole suite, or publish a change. A substantive behavioral bug still needs a reproduction and focused regression check.
+
 ## Overview
 
 Random fixes waste time and create new bugs. Quick patches mask underlying issues.
@@ -86,23 +90,12 @@ You MUST complete each phase before proceeding to the next.
    THEN investigate that specific component
    ```
 
-   **Example (multi-layer system):**
-   ```bash
-   # Layer 1: Workflow
-   echo "=== Secrets available in workflow: ==="
-   echo "IDENTITY: ${IDENTITY:+SET}${IDENTITY:-UNSET}"
-
-   # Layer 2: Build script
-   echo "=== Env vars in build script: ==="
-   env | grep IDENTITY || echo "IDENTITY not in environment"
-
-   # Layer 3: Signing script
-   echo "=== Keychain state: ==="
-   security list-keychains
-   security find-identity -v
-
-   # Layer 4: Actual signing
-   codesign --sign "$IDENTITY" --verbose=4 "$APP"
+   **Example (Windows environment boundary):**
+   ```powershell
+   # Check presence at the failing boundary without printing a secret value.
+   [pscustomobject]@{ IdentityConfigured = -not [string]::IsNullOrEmpty($env:IDENTITY) }
+   # Inspect the relevant build/signing tool's exit code and diagnostics next.
+   # Use that tool's native Windows command rather than macOS keychain commands.
    ```
 
    **This reveals:** Which layer fails (secrets → workflow ✓, workflow → build ✗)

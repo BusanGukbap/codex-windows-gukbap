@@ -4,8 +4,8 @@
  * Render graphviz diagrams from a skill's SKILL.md to SVG files.
  *
  * Usage:
- *   ./render-graphs.js <skill-directory>           # Render each diagram separately
- *   ./render-graphs.js <skill-directory> --combine # Combine all into one diagram
+ *   node render-graphs.js <skill-directory>           # Render each diagram separately
+ *   node render-graphs.js <skill-directory> --combine # Combine all into one diagram
  *
  * Extracts all ```dot blocks from SKILL.md and renders to SVG.
  * Useful for helping your human partner visualize the process flows.
@@ -15,7 +15,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
+const { execFileSync } = require('child_process');
 
 function extractDotBlocks(markdown) {
   const blocks = [];
@@ -69,7 +69,7 @@ ${bodies.join('\n\n')}
 
 function renderToSvg(dotContent) {
   try {
-    return execSync('dot -Tsvg', {
+    return execFileSync('dot', ['-Tsvg'], {
       input: dotContent,
       encoding: 'utf-8',
       maxBuffer: 10 * 1024 * 1024
@@ -87,14 +87,14 @@ function main() {
   const skillDirArg = args.find(a => !a.startsWith('--'));
 
   if (!skillDirArg) {
-    console.error('Usage: render-graphs.js <skill-directory> [--combine]');
+    console.error('Usage: node render-graphs.js <skill-directory> [--combine]');
     console.error('');
     console.error('Options:');
     console.error('  --combine    Combine all diagrams into one SVG');
     console.error('');
     console.error('Example:');
-    console.error('  ./render-graphs.js ../subagent-driven-development');
-    console.error('  ./render-graphs.js ../subagent-driven-development --combine');
+    console.error('  node render-graphs.js ../subagent-driven-development');
+    console.error('  node render-graphs.js ../subagent-driven-development --combine');
     process.exit(1);
   }
 
@@ -109,9 +109,10 @@ function main() {
 
   // Check if dot is available
   try {
-    execSync('which dot', { encoding: 'utf-8' });
+    execFileSync('dot', ['-V'], { encoding: 'utf-8', stdio: 'pipe' });
   } catch {
     console.error('Error: graphviz (dot) not found. Install with:');
+    console.error('  winget install Graphviz.Graphviz # Windows');
     console.error('  brew install graphviz    # macOS');
     console.error('  apt install graphviz     # Linux');
     process.exit(1);

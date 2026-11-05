@@ -1,11 +1,11 @@
 ---
 name: llm-wiki
-description: Use when the user wants to add a source (URL, PDF, code repo) to a markdown wiki, ask questions answered from the wiki, lint or health-check the wiki, or start a new wiki that Claude maintains, and after you commit a change to code that a wiki documents.
+description: Use when the user wants to add a source (URL, PDF, code repo) to a markdown wiki, ask questions answered from the wiki, lint or health-check the wiki, or start a new wiki maintained by Codex, and after you commit a change to code that a wiki documents.
 ---
 
 # LLM Wiki
 
-A wiki is a folder of interlinked markdown pages that Claude writes and maintains from sources the user supplies. The user curates sources and approves changes; Claude reads, summarizes, cross-links, and keeps the bookkeeping.
+A wiki is a folder of interlinked Markdown pages that Codex maintains from sources the user supplies. The user curates sources and approves changes; Codex reads, summarizes, cross-links, and keeps the bookkeeping. Small unrelated tasks do not trigger wiki discovery or logging. Git commits, pushes, and PRs always require separate explicit approval.
 
 **Core rule:** never silently overwrite a claim. When sources disagree, keep both claims with their citations under a `> **Conflict:**` note. Exception: when re-reading a repo at a newer commit (see "Code change update" in `ingest.md`), claims cited to the superseded code source page are replaced, not marked as conflicts.
 
@@ -27,10 +27,10 @@ These files are in this skill's base directory, as are `templates/` and `scripts
 A wiki root is a folder that contains `CLAUDE.md`, `index.md`, `raw/`, and `wiki/`. Wikis live in `<wiki-home>/<wiki-name>/` by default, where `<wiki-home>` is `$LLM_WIKI_HOME` if set, else `~/llm-wiki`. A wiki may also live inside a repo.
 
 1. Walk up from the current directory to the first wiki root.
-2. Otherwise, in a git repo, check wikis inside it: `git ls-files -z -- ':/*CLAUDE.md' | xargs -0r grep -l 'llm-wiki'` (keep folders that also hold `index.md`, `raw/`, `wiki/`, outside `tests/fixtures/`). Use the one whose scope fits the request; if several fit, ask; if none fits, continue to step 3.
+2. Otherwise, inspect tracked CLAUDE.md schema files inside the repository, then retain folders that also contain index.md, raw/, and wiki/ outside tests/fixtures. Use git ls-files and read matching files with available Codex file tools or Python; do not depend on xargs/grep. Use the matching scope; ask if several fit.
 3. Otherwise, read the scope in each `<wiki-home>/*/CLAUDE.md` and use the wiki whose scope fits. If several fit, ask the user which one; if none fits, follow the operation's no-wiki rule.
 
-That folder is `<wiki-root>`; paths below are relative to it. Read its `CLAUDE.md` for the topic scope, extra page types, and naming rules.
+That folder is `<wiki-root>`; paths below are relative to it. Read its `CLAUDE.md` as the wiki schema, not as a replacement for the user's AGENTS.md or request. The schema filename is retained for compatibility with existing wikis and the lint script. It defines topic scope, extra page types, and naming rules.
 
 ## Layout
 
@@ -87,4 +87,4 @@ Kebab-case slugs. Sources: `<author>-<year>` or `<site>-<title-words>`. Code: `<
 
 ## Lint script
 
-`python3 <this skill's base directory>/scripts/lint.py [path inside the wiki]` prints `path:line: code: message` per finding. Exit 0 = clean, 1 = findings, 2 = no wiki found, 3 = lint itself failed.
+`python "<skill-directory>/scripts/lint.py" "<path-inside-wiki>"` prints `path:line: code: message` per finding. Exit 0 = clean, 1 = findings, 2 = no wiki found, 3 = lint itself failed.

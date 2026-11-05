@@ -3,10 +3,8 @@
 Use this template when dispatching an implementer subagent.
 
 ```
-Subagent (general-purpose):
+Codex implementer (use the available collaboration tool; execute inline if unavailable):
   description: "Implement Task N: [task name]"
-  model: [MODEL — REQUIRED: choose per SKILL.md Model Selection; an omitted
-         model silently inherits the session's most expensive one]
   prompt: |
     You are implementing Task N: [task name]
 
@@ -35,7 +33,7 @@ Subagent (general-purpose):
     1. Implement exactly what the task specifies
     2. Write tests (following TDD if task says to)
     3. Verify implementation works
-    4. Commit your work
+    4. Keep changes local and uncommitted unless the user separately approved committing this diff
     5. Self-review (see below)
     6. Report back
 
@@ -44,8 +42,10 @@ Subagent (general-purpose):
     **While you work:** If you encounter something unexpected or unclear, **ask questions**.
     It's always OK to pause and clarify. Don't guess or make assumptions.
 
-    While iterating, run the focused test for what you're changing; run the
-    full suite once before committing, not after every edit.
+    While iterating, run focused checks for the affected behavior. Use broader
+    checks only when risk warrants them, and reuse valid results for unchanged inputs.
+    You are not alone in the checkout: do not revert other workers' changes.
+    Commit, push, PR, merge, or publication actions require separate explicit approval.
 
     ## Code Organization
 
@@ -74,8 +74,8 @@ Subagent (general-purpose):
 
     **How to escalate:** Report back with status BLOCKED or NEEDS_CONTEXT. Describe
     specifically what you're stuck on, what you've tried, and what kind of help you need.
-    The controller can provide more context, re-dispatch with a more capable model,
-    or break the task into smaller pieces.
+    The controller can provide more context or break the task into smaller pieces.
+    Do not override the user's selected model without authorization.
 
     ## Before Reporting Back: Self-Review
 

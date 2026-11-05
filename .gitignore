@@ -25,6 +25,16 @@ stats-cache.json
 !README.md
 !settings.json
 !statusline-command.sh
+!AGENTS.md
+!README-CODEX.md
+!codex/
+!codex/**
+!scripts/
+!scripts/**
+!tests/
+!tests/**
+!docs/
+!docs/**
 
 skills/synced/**
 **/__pycache__/

@@ -5,6 +5,10 @@ description: Use when facing 2+ independent tasks that can be worked on without 
 
 # Dispatching Parallel Agents
 
+## Codex and scope
+
+Use the host's available Codex collaboration tools. If they are unavailable, work inline; do not invent a Task API or create user chats for subtasks. Delegate only when independent substantial work benefits. Assign file ownership and tell each worker not to revert others' changes. Small edits stay inline. No worker may commit, push, open a PR, or publish without separate explicit approval.
+
 ## Overview
 
 You delegate tasks to specialized agents with isolated context. By precisely crafting their instructions and context, you ensure they stay focused and succeed at their task. They should never inherit your session's context or history — you construct exactly what they need. This also preserves your own context for coordination work.
@@ -81,7 +85,7 @@ Multiple dispatch calls in one response = parallel execution. One per response =
 When agents return:
 - Read each summary
 - Verify fixes don't conflict
-- Run full test suite
+- Run affected integration checks when the combined changes warrant them; reuse unchanged passing evidence
 - Integrate all changes
 
 ## Agent Prompt Structure
@@ -172,7 +176,7 @@ Agent 3 → Fix tool-approval-race-conditions.test.ts
 After agents return:
 1. **Review each summary** - Understand what changed
 2. **Check for conflicts** - Did agents edit same code?
-3. **Run full suite** - Verify all fixes work together
+3. **Verify integration** - Run only checks needed for the combined risk and reuse valid existing results
 4. **Spot check** - Agents can make systematic errors
 
 ## Real-World Impact

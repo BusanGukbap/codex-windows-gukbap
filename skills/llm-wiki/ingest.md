@@ -11,25 +11,24 @@ If there is no wiki, ask the user whether to create one. If yes:
 1. Ask for a one-sentence scope and a kebab-case `<wiki-name>` (or propose both and get them confirmed). The wiki root is `<wiki-home>/<wiki-name>/` (see SKILL.md). Use the current directory or a folder inside a repo only if the user asks for it.
 2. Create `raw/web/`, `raw/pdf/`, `raw/code/`, `wiki/sources/`, `wiki/entities/`, `wiki/concepts/`. Put an empty `.gitkeep` file in each so the layout survives a git clone (`find_root` needs `raw/` and `wiki/`).
 3. Copy `templates/CLAUDE.md`, `templates/index.md`, and `templates/log.md` into the wiki root. Fill in the topic and scope in `CLAUDE.md`. Append `## [YYYY-MM-DD] create | <topic>` to `log.md`.
-4. Do not run `git init`. If `git -C <wiki-root> rev-parse --is-inside-work-tree` prints `true` and `--show-toplevel` is not `$HOME`, commit only the wiki:
-   `git -C <wiki-root> add -- . && git -C <wiki-root> commit -m "Create wiki for <topic>" -- .`
+4. Do not run git init or commit automatically. Keep the new wiki local. Commit only if the user separately approves the described wiki diff; push and PR approval are separate.
 
 ## 1. Capture the source into raw/
 
 Pick a slug (see Naming in SKILL.md). The slug must be unused: if `raw/*/<slug>.*` or `wiki/sources/<slug>.md` already exists, either it is the same source (a duplicate, see below) or you add a letter suffix (`dao-2022b`). Never overwrite or replace a file under `raw/`.
 
-Check for a duplicate first: `grep -rlF -- "origin: <origin>" <wiki-root>/raw <wiki-root>/wiki/sources`. If one exists, tell the user which file and ask whether to skip or re-ingest. Re-ingesting code at a newer commit creates a new manifest and source page (new slug), and the check-in plans updates to the pages that cite the old one.
+Check for a duplicate origin first in raw/ and wiki/sources using the available text search tool, rg with a literal pattern, or Python. If one exists, tell the user which file and ask whether to skip or re-ingest. Re-ingesting code at a newer commit creates a new manifest and source page (new slug), and the check-in plans updates to the pages that cite the old one.
 
 Raw files go in exactly one of `raw/web/`, `raw/pdf/`, `raw/code/`, by kind. Do not create any other folder under `raw/`.
 
 **Web** (`raw/web/`)
-1. Get the full text: `curl -fsSL "<url>" -o "<scratchpad>/page.html"`, then convert with the first tool that exists: `pandoc -f html -t gfm page.html`, `markdownify page.html`, `html2text page.html`.
+1. Get the full text with an available connected source, browser, or web tool. Follow the user's web-tool preference. Preserve the source URL and use a local converter only if it is already available; do not install one automatically.
 2. Write `raw/web/<slug>.md` with frontmatter `origin: <url>` and `fetched: <YYYY-MM-DD>`, then the converted text.
-3. If curl fails or no converter exists, use WebFetch and ask it for the full article text verbatim. Add `capture: lossy` to the raw file and later to the source page, and tell the user the capture is lossy.
+3. If only extracted or incomplete text is available, add capture: lossy to the raw file and later to the source page, and disclose that limitation. Follow source copyright limits; do not request an entire copyrighted article verbatim.
 
 **PDF** (`raw/pdf/`)
-1. Copy the file to `raw/pdf/<slug>.pdf`, or download it there with `curl -fsSL "<url>" -o "<wiki-root>/raw/pdf/<slug>.pdf"`.
-2. Read it with the Read tool's `pages` parameter, at most 20 pages per call. Note the page number of everything you will cite. Section and Table numbers are not a substitute for `p.<n>`.
+1. Copy the supplied file to raw/pdf/<slug>.pdf with native file tools, or retrieve it with an available source/browser tool when authorized.
+2. Use the available PDF skill/tool or a local PDF extractor. Read bounded page ranges and record page numbers for claims; section and table numbers do not replace p.<n>. Do not invent a Claude Read-tool pages parameter in Codex.
 
 **Code** (`raw/code/`)
 1. Use a local path as-is, or `git clone --depth 1 -- "<url>" "<scratchpad>/<repo>"`.
@@ -82,15 +81,11 @@ Add or update the `index.md` line for every created or changed page. Append `## 
 
 ## 5. Lint
 
-Run `python3 <this skill's base directory>/scripts/lint.py <wiki-root>` and fix every finding this ingest introduced until only unrelated ones remain (exit 0 if none). Report pre-existing unrelated findings to the user instead of fixing them, and never edit files under `raw/` to silence `raw-modified`.
+Run `python "<skill-directory>/scripts/lint.py" "<wiki-root>"` and fix every finding this ingest introduced until only unrelated ones remain (exit 0 if none). Report pre-existing unrelated findings to the user instead of fixing them, and never edit files under `raw/` to silence `raw-modified`.
 
-## 6. Commit
+## 6. Finish locally
 
-If `git -C <wiki-root> rev-parse --is-inside-work-tree` prints `true` and `--show-toplevel` is not `$HOME`, the commit is part of the ingest. It is not optional and not left for the user:
-`git -C <wiki-root> add -- . && git -C <wiki-root> commit -m "Ingest <source title>" -- .`
-This commits only the wiki's own paths. Otherwise skip committing; `log.md` is the record.
-
-Finish by listing the files created and updated.
+List created/updated files and the lint result. Do not stage, commit, push, or open a PR automatically. A commit requires separate approval for the described wiki diff; log.md is the local record.
 
 ## Code change update
 
@@ -104,5 +99,5 @@ Use this after you committed a change to code in a repo that a wiki's `raw/code/
 6. Create the new source page (ingest step 3). In its "Touches" list, also link the source page it supersedes: `- [<old slug>](<old slug>.md) — superseded by this commit`.
 7. On every page that cites the superseded source page: replace each claim cited to it that your change made wrong with a corrected claim cited to the new source page (no `> **Conflict:**` note; this is the core-rule exception), re-cite claims that are still true to the new source page, remove the superseded page from `sources:` if nothing on the page cites it anymore, and set `updated:` to today. If a non-code source disagrees with the new code, that is still a `> **Conflict:**`.
 8. Bookkeeping (ingest step 4): add the new source page to `index.md`, append ` (superseded by [<new slug>](wiki/sources/<new slug>.md))` to the superseded source page's index line, and append `## [YYYY-MM-DD] update | <repo> @ <shortsha>` to `log.md`.
-9. Lint (ingest step 5) and commit only the wiki's paths (ingest step 6) with the message `Update wiki for <repo> @ <shortsha>`.
+9. Lint (ingest step 5) and finish locally (step 6). Commit the wiki only if separately approved for its current diff.
 10. In your final reply, list the wiki files created and updated.

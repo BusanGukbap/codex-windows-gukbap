@@ -5,7 +5,7 @@ Use this template when dispatching a code reviewer subagent.
 **Purpose:** Review completed work against requirements and code quality standards before it cascades into more work.
 
 ```
-Subagent (general-purpose):
+Codex reviewer (use the available collaboration tool, or review inline):
   description: "Review code changes"
   prompt: |
     You are a Senior Code Reviewer with expertise in software architecture,
@@ -20,19 +20,19 @@ Subagent (general-purpose):
 
     [PLAN_OR_REQUIREMENTS]
 
-    ## Git Range to Review
+    ## Git Range or Working Tree to Review
 
     **Base:** [BASE_SHA]
     **Head:** [HEAD_SHA]
 
-    ```bash
+    ```powershell
     git diff --stat [BASE_SHA]..[HEAD_SHA]
     git diff [BASE_SHA]..[HEAD_SHA]
     ```
 
     ## Read-Only Review
 
-    Your review is read-only on this checkout. Do not mutate the working tree, the index, HEAD, or branch state in any way. Use tools like `git show`, `git diff`, and `git log` to inspect history. If you need a working copy of a different revision, check it out into a separate temporary directory (e.g. `git worktree add /tmp/review-[SHA] [SHA]`) — never move HEAD on this checkout.
+    Your review is read-only on this checkout. Do not mutate the working tree, index, HEAD, or branch state. Use git show, git diff, and git log. For uncommitted work use git diff HEAD and explicitly read relevant untracked files from git ls-files --others --exclude-standard. Do not commit merely to create a review range. If another revision is needed, use an authorized separate temporary worktree with a quoted Windows-safe path; never move HEAD here. Reuse valid check results rather than repeating them without a concern.
 
     ## What to Check
 

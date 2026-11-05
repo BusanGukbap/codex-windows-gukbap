@@ -1,3 +1,11 @@
+# Codex Windows Gukbap
+
+This is a personal Windows/Codex adaptation of [thecasterian/claude-code](https://github.com/thecasterian/claude-code), obtained through the user's [fork](https://github.com/BusanGukbap/claude-code-steal). Personal changes are maintained in the private [codex-windows-gukbap](https://github.com/BusanGukbap/codex-windows-gukbap) repository. See [README-CODEX.md](README-CODEX.md) for native Windows setup, installation previews, and compatibility limits. Neither upstream nor the original fork is updated by this personal version.
+
+The original Claude Code integrations below remain reference material. Do not copy `settings.json` into Codex configuration.
+
+## Original Claude Code reference
+
 ## Plugins
 
 - `learning-output-style`

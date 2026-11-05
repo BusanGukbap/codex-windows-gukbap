@@ -8,15 +8,13 @@ code quality.
 more, nothing less) and is well-built (clean, tested, maintainable)
 
 ```
-Subagent (general-purpose):
+Codex read-only reviewer (use an available collaboration tool, or review inline):
   description: "Review Task N (spec + quality)"
-  model: [MODEL — REQUIRED: choose per SKILL.md Model Selection; an omitted
-         model silently inherits the session's most expensive one]
   prompt: |
     You are reviewing one task's implementation: first whether it matches its
     requirements, then whether it is well-built. This is a task-scoped gate,
-    not a merge review — a broad whole-branch review happens separately after
-    all tasks are complete.
+    not an automatic merge review. Reuse this review for later gates when
+    its scope covers them; another broad review needs a concrete unresolved risk.
 
     ## What Was Requested
 
@@ -40,8 +38,10 @@ Subagent (general-purpose):
     change. The diff's context lines ARE the changed files: do not Read a
     changed file separately unless a hunk you must judge is cut off
     mid-function — and say so in your report. Do not re-run git commands.
-    If the diff file is missing, fetch the diff yourself:
-    `git diff --stat [BASE_SHA]..[HEAD_SHA]` and `git diff [BASE_SHA]..[HEAD_SHA]`.
+    If the diff file is missing, fetch the committed range with git diff.
+    For uncommitted work use git diff HEAD and read relevant untracked files
+    listed by git ls-files --others --exclude-standard. Do not require commits
+    merely to enable a review.
     Do not crawl the broader codebase. Inspect code outside the diff only
     to evaluate a concrete risk you can name — one focused check per named
     risk, and name both the risk and what you checked in your report.

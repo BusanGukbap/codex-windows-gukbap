@@ -15,13 +15,15 @@ Write the test first. Watch it fail. Write minimal code to pass.
 
 ## When to Use
 
-**Always:**
+Apply this cycle to non-trivial behavior changes. Small documentation, formatting, configuration, or otherwise bounded low-risk edits use focused verification under the user's policy and do not require artificial regression tests. Do not run broad suites or review agents merely to satisfy a workflow.
+
+**For behavior changes:**
 - New features
 - Bug fixes
 - Refactoring
 - Behavior changes
 
-**Exceptions (ask your human partner):**
+**Use judgment within the user's authorized scope:**
 - Throwaway prototypes
 - Generated code
 - Configuration files
@@ -114,7 +116,7 @@ Vague name, tests mock not code
 
 **MANDATORY. Never skip.**
 
-```bash
+```powershell
 npm test path/to/test.test.ts
 ```
 
@@ -169,7 +171,7 @@ Don't add features, refactor other code, or "improve" beyond the test.
 
 **MANDATORY.**
 
-```bash
+```powershell
 npm test path/to/test.test.ts
 ```
 
@@ -300,8 +302,8 @@ test('rejects empty email', async () => {
 ```
 
 **Verify RED**
-```bash
-$ npm test
+```text
+> npm test
 FAIL: expected 'Email required', got undefined
 ```
 
@@ -316,8 +318,8 @@ function submitForm(data: FormData) {
 ```
 
 **Verify GREEN**
-```bash
-$ npm test
+```text
+> npm test
 PASS
 ```
 
@@ -352,7 +354,7 @@ Can't check all boxes? You skipped TDD. Start over.
 
 Bug found? Write failing test reproducing it. Follow TDD cycle. Test proves fix and prevents regression.
 
-Never fix bugs without a test.
+For non-trivial behavior bugs, demonstrate the failure and verify the correction with a meaningful focused regression check. Small non-behavior edits follow the user's verification policy.
 
 ## Testing Anti-Patterns
 

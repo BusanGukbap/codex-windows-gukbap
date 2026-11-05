@@ -5,6 +5,10 @@ description: Use when creating new skills, editing existing skills, or verifying
 
 # Writing Skills
 
+## Personal Codex policy
+
+Use the user's scoped verification policy. Small wording/path/configuration adaptations need focused checks for metadata, links, commands, and the changed behavior; they do not require multi-agent pressure scenarios or a deployment cycle for each edit. Novel behavioral guidance may warrant representative baseline/comparison scenarios. Use available Codex agents only when helpful, otherwise review inline. Reuse valid unchanged evidence. Never commit, push, deploy, or contribute a PR without separate explicit approval. Anthropic reference documents below are preserved upstream background, not Codex tool/API documentation.
+
 ## Overview
 
 **Writing skills IS Test-Driven Development applied to process documentation.**
@@ -222,7 +226,7 @@ Use words an agent would search for:
 **Techniques:**
 
 **Move details to tool help:**
-```bash
+```text
 # ❌ BAD: Document all flags in SKILL.md
 search-conversations supports --text, --both, --after DATE, --before DATE, --limit N
 
@@ -259,8 +263,8 @@ You: Searching...
 - Don't include multiple examples of same pattern
 
 **Verification:**
-```bash
-wc -w skills/path/SKILL.md
+```powershell
+(Get-Content -LiteralPath 'skills/path/SKILL.md' -Raw | Measure-Object -Word).Words
 # getting-started workflows: aim for <150 each
 # Other frequently-loaded: aim for <200 total
 ```
@@ -316,9 +320,9 @@ digraph when_flowchart {
 See `graphviz-conventions.dot` in this directory for graphviz style rules.
 
 **Visualizing for your human partner:** Use `render-graphs.js` in this directory to render a skill's flowcharts to SVG:
-```bash
-./render-graphs.js ../some-skill           # Each diagram separately
-./render-graphs.js ../some-skill --combine # All diagrams in one SVG
+```powershell
+node "./render-graphs.js" "../some-skill"           # Each diagram separately
+node "./render-graphs.js" "../some-skill" --combine # All diagrams in one SVG
 ```
 
 ## Code Examples
@@ -613,14 +617,14 @@ helper1, helper2, step3, pattern4
 
 ## STOP: Before Moving to Next Skill
 
-**After writing ANY skill, you MUST STOP and complete the deployment process.**
+**Before reporting a skill ready, perform verification proportional to the changed guidance. Local preparation does not authorize deployment.**
 
 **Do NOT:**
 - Create multiple skills in batch without testing each
 - Move to next skill before current one is verified
 - Skip testing because "batching is more efficient"
 
-**The deployment checklist below is MANDATORY for EACH skill.**
+**Use the applicable checklist items below for meaningful new skill behavior; small adaptations follow the scoped policy above.**
 
 Deploying untested skills = deploying untested code. It's a violation of quality standards.
 
@@ -662,8 +666,9 @@ Deploying untested skills = deploying untested code. It's a violation of quality
 - [ ] Supporting files only for tools or heavy reference
 
 **Deployment:**
-- [ ] Commit skill to git and push to your fork (if configured)
-- [ ] Consider contributing back via PR (if broadly useful)
+- [ ] Report the local skill changes and verification scope
+- [ ] Install into live user configuration only when that installation is requested
+- [ ] Commit, push, or contribute a PR only after separate explicit approval; personal-only work remains local
 
 ## Discovery Workflow
 

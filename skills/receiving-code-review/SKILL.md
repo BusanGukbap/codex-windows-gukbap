@@ -21,7 +21,7 @@ WHEN receiving code review feedback:
 3. VERIFY: Check against codebase reality
 4. EVALUATE: Technically sound for THIS codebase?
 5. RESPOND: Technical acknowledgment or reasoned pushback
-6. IMPLEMENT: One item at a time, test each
+6. IMPLEMENT: Resolve findings within scope and run affected checks; reuse valid unchanged results
 ```
 
 ## Forbidden Responses
@@ -41,8 +41,8 @@ WHEN receiving code review feedback:
 
 ```
 IF any item is unclear:
-  STOP - do not implement anything yet
-  ASK for clarification on unclear items
+  PAUSE dependent changes and ASK for clarification on unclear items
+  CONTINUE independent authorized fixes when safe
 
 WHY: Items may be related. Partial understanding = wrong implementation.
 ```
