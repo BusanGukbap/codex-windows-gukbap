@@ -20,6 +20,8 @@ stats-cache.json
 !rules/**
 !skills/
 !skills/**
+!personal-skills/
+!personal-skills/**
 !.gitignore
 !CLAUDE.md
 !README.md

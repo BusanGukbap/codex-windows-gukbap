@@ -94,16 +94,26 @@ def guidance_data(before: bytes | None, fragment: bytes) -> tuple[bytes, bool]:
     return bom + result.replace("\n", newline).encode("utf-8"), managed
 
 
-def plan_install(source: Path, home: Path, codex_home: Path, with_guidance: bool = False) -> tuple[list[Write], int]:
+def plan_install(source: Path, home: Path, codex_home: Path, with_guidance: bool = False, with_personal_skills: bool = False) -> tuple[list[Write], int]:
     source, home, codex_home = map(absolute, (source, home, codex_home))
     for root in (source, home, codex_home):
         plain_path(root)
     skill_source = source / "skills"
     if not skill_source.is_dir():
         raise InstallError(f"Skill source directory is missing: {skill_source}")
-    skills = sorted(path for path in skill_source.iterdir() if path.is_dir())
+    sources = [skill_source]
+    if with_personal_skills:
+        personal_source = source / "personal-skills"
+        plain_path(personal_source)
+        if not personal_source.is_dir():
+            raise InstallError(f"Personal skill source directory is missing: {personal_source}")
+        sources.append(personal_source)
+    skills = sorted((path for directory in sources for path in directory.iterdir() if path.is_dir()), key=lambda path: path.name)
     if not skills:
         raise InstallError("The bundle has no skills to install.")
+    names = [skill.name.casefold() for skill in skills]
+    if len(names) != len(set(names)):
+        raise InstallError("Duplicate source skill names in the core and personal bundles.")
     roots = list(dict.fromkeys((home / ".agents" / "skills", home / ".codex" / "skills", codex_home / "skills")))
     writes: list[Write] = []
     unchanged = 0
@@ -189,12 +199,13 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--home", type=Path, help="use an isolated profile home; ignores inherited CODEX_HOME")
     parser.add_argument("--codex-home", type=Path, help="explicit Codex config directory (overrides CODEX_HOME)")
     parser.add_argument("--with-guidance", action="store_true", help="merge the optional personal guidance block into AGENTS.md")
+    parser.add_argument("--with-personal-skills", action="store_true", help="also include the optional frequently used skill snapshots")
     args = parser.parse_args(argv)
     home = absolute(args.home if args.home is not None else Path.home())
     selected = args.codex_home or (None if args.home is not None else os.environ.get("CODEX_HOME")) or home / ".codex"
     codex_home = absolute(selected)
     try:
-        writes, unchanged = plan_install(Path(__file__).resolve().parents[1], home, codex_home, args.with_guidance)
+        writes, unchanged = plan_install(Path(__file__).resolve().parents[1], home, codex_home, args.with_guidance, args.with_personal_skills)
         mode = "APPLY" if args.apply else "PREVIEW (no files written)"
         print(mode)
         print(f"Profile: {home}\nCodex config: {codex_home}")

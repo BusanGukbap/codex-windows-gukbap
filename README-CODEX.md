@@ -43,6 +43,29 @@ Keep the official Superpowers plugin uninstalled when using this personal versio
 
 Restart Codex after installing. Invoke a skill explicitly with `$brainstorming`, `$systematic-debugging`, or another installed skill name. Plain chat and small changes do not need the full skill workflow. See [Codex skills](https://learn.chatgpt.com/docs/build-skills) and [AGENTS.md discovery](https://learn.chatgpt.com/docs/agent-configuration/agents-md).
 
+## Optional frequently used personal skills
+
+`personal-skills/` contains 6 snapshots explicitly selected by the user: `i-have-adhd`, `gh`, `archify`, `find-docs`, `drawio-skill`, and `graphify`. A bounded usage audit informed the initial shortlist; the final set is the user's choice. The sample covers 17 root chats from 2026-10-27 through 2026-11-06 (KST), excludes the current maintenance chat, and counts concrete SKILL.md read calls rather than catalog mentions. These are observed loads, not proof that every invocation was deliberate. Existing core skills are not duplicated here.
+
+| Use | Included snapshots |
+| --- | --- |
+| Response style | `i-have-adhd` |
+| Documentation and GitHub | `find-docs`, `gh` |
+| Code knowledge graphs | `graphify` |
+| Diagrams | `archify`, `drawio-skill` |
+
+Selection counts, source identifiers, licenses, resource sizes, compatibility notes, and source hashes are recorded in [the snapshot manifest](codex/personal-skills.json). Original skill content and bundled license/reference files are preserved. No conversation histories or vault notes are included.
+
+Preview this optional collection along with the 16 core skills:
+
+```powershell
+python .\scripts\install.py --with-personal-skills --with-guidance
+```
+
+After reviewing that preview, add `--apply --replace` to install explicitly. Without `--with-personal-skills`, the core-only default is unchanged. The same existing-location reuse, duplicate refusal, backup, and guidance-preservation rules apply.
+
+These additional skills are source snapshots, not a promise that every external integration has been ported or tested on Windows. Some require connected MCP tools, Context7, a local knowledge-search service, Node, draw.io, or other separately installed software. Their upstream instructions may contain POSIX commands, platform-specific paths, broad auto-invocation rules, or separate permission prompts. Follow the current user/project policies and adapt only the needed command; do not install tools or run an entire workflow merely because a snapshot mentions it. Selecting this optional collection can affect skill routing after installation. No additional packages, services, plugins, or live settings are changed by previewing it.
+
 ## What was adapted
 
 | Original integration | Windows/Codex behavior |

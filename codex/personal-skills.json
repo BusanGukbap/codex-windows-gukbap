@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "description": "Optional personal skill snapshots explicitly selected by the user; source behavior and resources are preserved.",
+  "selection": {
+    "criterion": "Explicitly selected by the user from the bounded usage audit",
+    "coverage": {
+      "requested_period_kst": [
+        "2026-10-07",
+        "2026-11-06"
+      ],
+      "observed_session_dates_kst": [
+        "2026-10-27",
+        "2026-11-06"
+      ],
+      "rollout_files_checked": 300,
+      "distinct_root_sessions": 17,
+      "child_rollouts_skipped": 282,
+      "matching_skill_read_calls": 165,
+      "current_maintenance_chat_excluded": true
+    },
+    "caveat": "Counts describe actual concrete SKILL.md file loads, not deliberate user invocations or a complete usage history. Automatic triggers may affect the counts.",
+    "selected_names": [
+      "i-have-adhd",
+      "gh",
+      "archify",
+      "find-docs",
+      "drawio-skill",
+      "graphify"
+    ]
+  },
+  "privacy": {
+    "included": "Installed skill source and distributed support files/examples only",
+    "excluded": "Session histories, user notes, runtime outputs, dependency caches, credentials and private keys",
+    "source_paths": "Relative origin identifiers only; no absolute home or session paths are recorded here"
+  },
+  "skills": [
+    {
+      "name": "i-have-adhd",
+      "snapshot_path": "personal-skills/i-have-adhd",
+      "source_origin": "user/.codex/skills/i-have-adhd",
+      "observed_sessions": 11,
+      "skill_sha256": "3170b16ace00aecb0dd7feb54c0b5aa642e7502acda06ecd24fd89a11c7127e9",
+      "files": 3,
+      "bytes": 9602,
+      "license": {
+        "declared": "MIT",
+        "files": []
+      },
+      "compatibility_notes": "Instruction-only response preference; preserve the installed invocation policy."
+    },
+    {
+      "name": "gh",
+      "snapshot_path": "personal-skills/gh",
+      "source_origin": "user/.agents/skills/gh",
+      "observed_sessions": 9,
+      "skill_sha256": "9577464837eb6d1b297cda8fd3bb4838d0ea0129315d9bc20e69b0517d748782",
+      "files": 4,
+      "bytes": 104857,
+      "license": {
+        "declared": null,
+        "files": []
+      },
+      "compatibility_notes": "Requires GitHub CLI and the user's own authenticated account; no authentication data is included."
+    },
+    {
+      "name": "archify",
+      "snapshot_path": "personal-skills/archify",
+      "source_origin": "user/.codex/skills/archify",
+      "observed_sessions": 3,
+      "skill_sha256": "93434ad579983f4cff639c2b7230c311e0785cc48a25b66b1498e1802be7de91",
+      "files": 203,
+      "bytes": 17826551,
+      "license": {
+        "declared": "MIT",
+        "files": [
+          "LICENSE",
+          "THIRD_PARTY_NOTICES.md",
+          "explainer/vendor/pele/LICENSE"
+        ]
+      },
+      "compatibility_notes": "Includes distributed Node CLI, renderers, resources and examples; external runtime/export dependencies must be available. Rendering is not validated by this snapshot."
+    },
+    {
+      "name": "find-docs",
+      "snapshot_path": "personal-skills/find-docs",
+      "source_origin": "user/.agents/skills/find-docs",
+      "observed_sessions": 10,
+      "skill_sha256": "a6483e5c3f37fb1659f4963926a78b97d4e1632f75f9bcc2bbc8a5698253de35",
+      "files": 1,
+      "bytes": 6326,
+      "license": {
+        "declared": null,
+        "files": []
+      },
+      "compatibility_notes": "Requires the external Context7/ctx7 CLI and network access; Windows CLI operation is not validated by this snapshot."
+    },
+    {
+      "name": "drawio-skill",
+      "snapshot_path": "personal-skills/drawio-skill",
+      "source_origin": "user/.codex/skills/drawio-skill",
+      "observed_sessions": 4,
+      "skill_sha256": "a06f5f368b537a294289fe206ea07addcb93d7226a916bed835a8f810d5e1052",
+      "files": 25,
+      "bytes": 627072,
+      "license": {
+        "declared": "MIT",
+        "files": []
+      },
+      "compatibility_notes": "Requires external draw.io/export tooling; desktop executable paths and optional runtime dependencies require local configuration."
+    },
+    {
+      "name": "graphify",
+      "snapshot_path": "personal-skills/graphify",
+      "source_origin": "user/.agents/skills/graphify",
+      "observed_sessions": 8,
+      "skill_sha256": "a26760fa8a40a270b377b828878df49ee399a3f1fd2311c38435ed0acf8c0acf",
+      "files": 10,
+      "bytes": 65223,
+      "license": {
+        "declared": null,
+        "files": []
+      },
+      "compatibility_notes": "Requires external graphify/Python tooling and optional services; original shell examples are retained and have not been ported or executed."
+    }
+  ]
+}

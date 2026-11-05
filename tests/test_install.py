@@ -59,6 +59,31 @@ class InstallTests(unittest.TestCase):
         self.assertIsNone(install.apply(again, self.codex))
         self.assertFalse((self.codex / "backups").exists())
 
+    def test_personal_skills_are_opt_in_and_install_resources(self):
+        self.put(self.source / "personal-skills/beta/SKILL.md", b"---\nname: beta\n---\nOptional personal skill.\n")
+        self.put(self.source / "personal-skills/beta/references/guide.md", b"Keep the reference.\n")
+        status, preview = self.cli(["--home", str(self.home)])
+        self.assertEqual(status, 0, preview)
+        self.assertNotIn("beta", preview)
+        self.assertFalse(self.home.exists())
+        status, output = self.cli(["--home", str(self.home), "--with-personal-skills", "--apply"])
+        self.assertEqual(status, 0, output)
+        self.assertEqual((self.home / ".agents/skills/beta/references/guide.md").read_bytes(), b"Keep the reference.\n")
+        status, output = self.cli(["--home", str(self.home), "--with-personal-skills"])
+        self.assertEqual(status, 0, output)
+        self.assertIn("Changed files: 0;", output)
+
+    def test_personal_bundle_duplicate_name_aborts_before_writes(self):
+        self.put(self.source / "personal-skills/alpha/SKILL.md", b"A conflicting source.")
+        with self.assertRaisesRegex(install.InstallError, "Duplicate source skill"):
+            install.plan_install(self.source, self.home, self.codex, with_personal_skills=True)
+        self.assertFalse(self.home.exists())
+
+    def test_missing_personal_bundle_reports_error_without_writes(self):
+        with self.assertRaisesRegex(install.InstallError, "Personal skill source"):
+            install.plan_install(self.source, self.home, self.codex, with_personal_skills=True)
+        self.assertFalse(self.home.exists())
+
     def test_existing_unique_legacy_skill_is_reused(self):
         legacy = self.codex / "skills/alpha/SKILL.md"
         self.put(legacy, (self.source / "skills/alpha/SKILL.md").read_bytes())

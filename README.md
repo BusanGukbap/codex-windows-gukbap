@@ -4,6 +4,8 @@ This is a personal Windows/Codex adaptation of [thecasterian/claude-code](https:
 
 The original Claude Code integrations below remain reference material. Do not copy `settings.json` into Codex configuration.
 
+The 16 adapted core skills are complemented by an opt-in collection of 6 user-selected personal skill snapshots under `personal-skills/`. See [the optional collection](README-CODEX.md#optional-frequently-used-personal-skills) before enabling it; the default installer remains core-only.
+
 ## Original Claude Code reference
 
 ## Plugins
